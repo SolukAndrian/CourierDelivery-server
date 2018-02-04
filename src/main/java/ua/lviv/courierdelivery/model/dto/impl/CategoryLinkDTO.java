@@ -18,6 +18,10 @@ public class CategoryLinkDTO extends DTO<Category> {
         add(linkTo(methodOn(CategoryController.class).getAllCategories()).withRel("courses"));
     }
 
+    public Integer getCategoryId() {
+        return getEntity().getId();
+    }
+    
     public String getName() {
         return getEntity().getName();
     }
