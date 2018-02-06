@@ -24,10 +24,6 @@ public class Authority extends BaseEntity {
     @Enumerated(EnumType.STRING)
     private AuthorityName name;
 
-    @Column(name = "status")
-    @NotNull
-    private Boolean isEnabled;
-
     @ManyToMany(mappedBy = "authorities", fetch = FetchType.LAZY)
     private List<User> users;
 
@@ -52,13 +48,5 @@ public class Authority extends BaseEntity {
 
     public void setUsers(List<User> users) {
         this.users = users;
-    }
-
-    public Boolean getEnabled() {
-        return isEnabled;
-    }
-
-    public void setEnabled(Boolean enabled) {
-        isEnabled = enabled;
     }
 }

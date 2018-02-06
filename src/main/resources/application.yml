@@ -10,8 +10,16 @@ spring:
       ddl-auto: validate
       naming-strategy: org.hibernate.cfg.ImprovedNamingStrategy
 app:
+  jwt:
+    header: Authentication
+    secret: K&Mcq(\*cy(<9bUa)|E'(@]G$ao~'Vm1h@upwRWECrLvw~>M1J{26}g6ZAr;2}i
+    expiration: 604800
+    route:
+      authentication:
+        path: api/auth
+        refresh: refresh
   images:
     maxSize: 1048576
     userQuote: 10485760
   origin:
-        url: http://localhost:3000
+      url: http://localhost:3000
