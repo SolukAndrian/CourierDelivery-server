@@ -90,10 +90,10 @@ public class AuthenticationRestController {
 
     @RequestMapping(value = "${app.jwt.route.authentication.path}", method = RequestMethod.POST)
     public ResponseEntity<JwtAuthenticationResponse> createAuthenticationToken(
-            @RequestBody JwtAuthenticationRequest authenticationRequest, Device device) throws AuthenticationException {
+            @RequestBody JwtAuthenticationRequest authenticationRequest, Device device) {
         HttpHeaders headers = authenticationRestService.getAuthHeaders(authenticationRequest.getUsername(),
                 authenticationRequest.getPassword(), device);
-        return new ResponseEntity<>(new JwtAuthenticationResponse("Ok"), headers, HttpStatus.OK);
+        return new ResponseEntity<>(headers, HttpStatus.OK);
     }
 
 

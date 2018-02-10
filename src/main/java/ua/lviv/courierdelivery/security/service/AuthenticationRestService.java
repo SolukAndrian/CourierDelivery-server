@@ -1,6 +1,5 @@
 package ua.lviv.courierdelivery.security.service;
 
-import com.google.api.client.googleapis.auth.oauth2.GoogleIdToken;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;
@@ -22,7 +21,6 @@ import ua.lviv.courierdelivery.security.JwtUser;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import java.util.Collections;
-import java.util.Map;
 
 /**
  * Created by Apple on 06.02.2018.
@@ -40,12 +38,11 @@ public class AuthenticationRestService {
     private String tokenHeader;
 
     public HttpHeaders getAuthHeaders(String email, String password, Device device) {
+        UserDetails userDetails = userDetailsService.loadUserByUsername(email);
         Authentication authentication = getAuthenticationToken(email, password);
         SecurityContextHolder.getContext().setAuthentication(authentication);
-        UserDetails userDetails = userDetailsService.loadUserByUsername(email);
         validateUser(userDetails);
-        String token = jwtTokenUtil.generateToken(userDetails, device);
-        return addTokenToHeaderCookie(token);
+        return addTokenToHeaderCookie(jwtTokenUtil.generateToken(userDetails, device));
     }
 
     public HttpHeaders getHeadersForRefreshToken(HttpServletRequest request) {
@@ -86,22 +83,13 @@ public class AuthenticationRestService {
     }
 
     private Authentication getAuthenticationToken(String email, String password) {
-        final Authentication authentication = authenticationManager.authenticate(
+        return authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(email, password,
-                        Collections.singletonList(new SimpleGrantedAuthority(AuthorityName.ROLE_USER.toString())))
-        );
-        return authentication;
+                        Collections.singletonList(new SimpleGrantedAuthority(AuthorityName.ROLE_USER.toString()))));
     }
 
-    private Authentication getAuthenticationTokenWithoutVerify(String email) {
-        final UsernamePasswordAuthenticationToken authentication =
-                new UsernamePasswordAuthenticationToken(email, null,
-                        Collections.singletonList(new SimpleGrantedAuthority(AuthorityName.ROLE_USER.toString())));
-        return authentication;
-    }
-
-    private void validateUser(UserDetails userDetails){
-        if(!userDetails.isAccountNonLocked()){
+    private void validateUser(UserDetails userDetails) {
+        if (!userDetails.isAccountNonLocked()) {
             throw new LockedException("Account is deactivated");
         }
     }
